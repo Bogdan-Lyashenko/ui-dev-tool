@@ -3,23 +3,19 @@ import Helpers from "../../utils/helpers.js";
 const LogLevelMap = {
     ERROR: {
         code: 0,
-        consoleFnName: 'error',
-        shortcut: 'ERROR'
+        consoleFnName: 'error'
     },
     WARNING: {
         code: 1,
-        consoleFnName: 'warn',
-        shortcut: 'WARNING'
+        consoleFnName: 'warn'
     },
     INFO: {
         code: 2,
-        consoleFnName: 'info',
-        shortcut: 'INFO'
+        consoleFnName: 'info'
     },
     DEBUG: {
         code: 3,
-        consoleFnName: 'debug',
-        shortcut: 'DEBUG'
+        consoleFnName: 'debug'
     }
 };
 
@@ -32,41 +28,54 @@ export default class Logger {
      */
     constructor() {
         this.messageBuffer_ = [];
-        this.logSources_ = [];
-        this.currentLogLevelCode_ = LogLevelMap.DEBUG.code;
+        this.logSources = [];
+        this.currentLogLevelCode = LogLevelMap.DEBUG.code;
 
-        this.setupMessageBufferFiller_();
+        this.setupMessageBufferFiller();
     }
 
     error () {
-        return this.log_(LogLevelMap.ERROR, arguments);
+        return this.log(LogLevelMap.ERROR, arguments);
     }
 
     warn () {
-        return this.log_(LogLevelMap.WARNING, arguments);
+        return this.log(LogLevelMap.WARNING, arguments);
     }
 
     info () {
-        return this.log_(LogLevelMap.INFO, arguments);
+        return this.log(LogLevelMap.INFO, arguments);
     }
 
     debug () {
-        return this.log_(LogLevelMap.DEBUG, arguments);
+        return this.log(LogLevelMap.DEBUG, arguments);
+    }
+
+    /**
+     *
+     * @returns {{start: string, end: string}}
+     */
+    getPairedLogMarkers () {
+        var id = Helpers.generateUniqueString();
+
+        return {
+            start: ' (start *'+ id + '* )',
+            end: ' (end *'+ id + '* )'
+        };
     }
 
     /**
      * Message buffer fill implementation
      * @private
      */
-    setupMessageBufferFiller_ () {
+    setupMessageBufferFiller () {
         this.addSource((content, logLevel) => {
-            this.messageBuffer_.push({
+            this.messageBuffer.push({
                 content: content,
                 logLevel: logLevel
             });
 
-            if (this.messageBuffer_.length > DEFAULT_MAX_BUFFER_LENGTH) {
-                this.messageBuffer_ = this.messageBuffer_.slice(-DEFAULT_MAX_BUFFER_LENGTH);
+            if (this.messageBuffer.length > DEFAULT_MAX_BUFFER_LENGTH) {
+                this.messageBuffer = this.messageBuffer.slice(-DEFAULT_MAX_BUFFER_LENGTH);
             }
         });
     }
@@ -84,7 +93,7 @@ export default class Logger {
      * @param {Object} logLevel
      */
     setLogLevel (logLevel) {
-        this.currentLogLevelCode_ = logLevel.code;
+        this.currentLogLevelCode = logLevel.code;
     }
 
     /**
@@ -92,15 +101,15 @@ export default class Logger {
      * @param {Function} sourceFn
      */
     addSource (sourceFn) {
-        if (!_.isFunction(sourceFn)) {
+        if (!Helpers.isFunction(sourceFn)) {
             throw new Error('Invalid logger source');
         }
 
-        this.logSources_.push(function (prefix, args) {
-            sourceFn(content, prefix.logLevel, prefix.timeStr);
+        this.logSources.push(function (prefix, args) {
+            sourceFn(args, prefix.logLevel, prefix.timeStr);
         });
 
-        _.each(this.messageBuffer_, function (item) {
+        this.messageBuffer.forEach(function (item) {
             sourceFn(item.content, item.logLevel, item.timeStr);
         });
     }
@@ -110,10 +119,10 @@ export default class Logger {
      * @param {Array} args
      * @private
      */
-    log_ (logLevel, args) {
+    log (logLevel, args) {
         let now, prefix;
 
-        if (logLevel.code > this.currentLogLevelCode_) {
+        if (logLevel.code > this.currentLogLevelCode) {
             return;
         }
 
@@ -123,7 +132,7 @@ export default class Logger {
             logLevel: logLevel
         };
 
-        _.each(this.logSources_, function(item) {
+        this.logSources.forEach(function(item) {
             item(prefix, args);
         });
     }
