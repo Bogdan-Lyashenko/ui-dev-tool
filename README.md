@@ -10,7 +10,7 @@
 ### Performance check application. 
 It allows to detect performance lacks during start-end points. 
 
-Get apllication.
+Get application.
 ```javascript
 let PerformanceCheck = UiDevTool.applications.PerformanceCheck;
 ```
@@ -51,9 +51,9 @@ PerformanceCheck.end(SUM_COMPUTING_PROCESS_ID);
 ```
 
 ### Logger application. 
-Logs enpoint with different sources
+Logs end-point with different sources
 
-Get apllication.
+Get application.
 ```javascript
 let Logger = UiDevTool.applications.Logger;
 ```
@@ -73,8 +73,16 @@ Logger.info('Message 1..');
 Logger.warn('Message 2..');
 Logger.error('Message 2..');
 ```
+Get paired log markers to log connected operations. I.e. server request-response. It helps to analyze paired logs by unique id.
+```javascript
+var log = Logger.getPairedLogMarkers();
 
-### Uther auth application. 
+Logger.info(`Process start ${log.start}`);
+//.. processing..
+Logger.info(`Process end ${log.end}`);
+```
+
+### User auth application.
 Configure permissions for usage of different applications. 
 
 ### Statistics render application. 
@@ -83,7 +91,7 @@ Render interactive graphs. I.e. performance check results.
 ##Register your own applications
 ```javascript
  class YourApp extends BasicApplication {
-     constuctor() { }
+     constructor() { }
  }
   
  try {
