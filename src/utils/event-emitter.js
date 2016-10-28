@@ -3,7 +3,7 @@ import Helper from "./helpers.js";
 export default class EventEmitter {
     constructor() {
         this.id = Helper.generateUniqueString();
-        this.eventListeners_ = {};
+        this.eventListeners = {};
     }
 
     /**
@@ -12,11 +12,11 @@ export default class EventEmitter {
      * @param {function} callback
      */
     on (name, callback) {
-        if (!Array.isArray(this.eventListeners_[name])) {
-            this.eventListeners_[name] = [];
+        if (!Array.isArray(this.eventListeners[name])) {
+            this.eventListeners[name] = [];
         }
 
-        this.eventListeners_[name].push(callback);
+        this.eventListeners[name].push(callback);
     }
 
     /**
@@ -25,7 +25,7 @@ export default class EventEmitter {
      * @param {Object} event
      */
     emit (name, event) {
-        _.each(this.eventListeners_[name], (callback) => {
+        eventListeners.forEach([name], (callback) => {
             callback && callback(event);
         });
     }
@@ -35,7 +35,7 @@ export default class EventEmitter {
      * @returns {Object}
      */
     getEventListeners () {
-        return this.eventListeners_;
+        return this.eventListeners;
     }
 }
 

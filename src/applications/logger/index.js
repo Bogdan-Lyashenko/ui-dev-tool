@@ -27,7 +27,7 @@ export default class Logger {
      * @returns {Object}
      */
     constructor() {
-        this.messageBuffer_ = [];
+        this.messageBuffer  = [];
         this.logSources = [];
         this.currentLogLevelCode = LogLevelMap.DEBUG.code;
 

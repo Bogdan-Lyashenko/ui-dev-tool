@@ -16,13 +16,11 @@ export default class ControlPanel {
         this.clock = new Clock();
 
         this.eventEmitter = new EventEmitter();
-		
-		this.initDomEventListeners();
+
+        this.initDomEventListeners();
     }
 
-    initDomEventListeners() {
-        
-    }
+    initDomEventListeners() { }
 
     /**
      *
